@@ -1,9 +1,17 @@
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import java.util.Scanner;
 
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -298,7 +306,37 @@ public class PR142Main {
 			
 			elmAlumne.appendChild(elmNouAlumne);
 			
+			// Crea un transformador XSLT
+			
+			Transformer transformer = TransformerFactory.newInstance().newTransformer();
+			
+			// Estableix la propietat OMIT_XML_DECLARATION a "no" per no ometre la declaració XML del document XML resultant
+			
+			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+			
+			// Estableix la propietat INDENT a "yes" per indentar el document XML resultant
+			
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			
+			// Crea una instància de DOMSource a partir del document XML
+			
+			DOMSource source = new DOMSource(doc);
+			
+			// Crea una instància de StreamResult a partir del camí del fitxer XML
+			
+			StreamResult result = new StreamResult(new FileOutputStream(new File(System.getProperty("user.dir") + "/data/cursos.xml")));
+			
+			// Transforma el document XML especificat per source i escriu el document XML resultant a l'objecte especificat per result
+			
+			transformer.transform(source, result);
+			
 		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			
+		} catch (TransformerException e) {
 			e.printStackTrace();
 		}
 	}
@@ -351,11 +389,40 @@ public class PR142Main {
 			// Eliminem l'alumne sel·leccionat
 			
 			if (nodeAlumne != null) {
+				
 				nodeAlumne.getParentNode().removeChild(nodeAlumne);
+				
+				// Crea un transformador XSLT
+				
+				Transformer transformer = TransformerFactory.newInstance().newTransformer();
+				
+				// Estableix la propietat OMIT_XML_DECLARATION a "no" per no ometre la declaració XML del document XML resultant
+				
+				transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+				
+				// Estableix la propietat INDENT a "yes" per indentar el document XML resultant
+				
+				transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+				
+				// Crea una instància de DOMSource a partir del document XML
+				
+				DOMSource source = new DOMSource(doc);
+				
+				// Crea una instància de StreamResult a partir del camí del fitxer XML
+				
+				StreamResult result = new StreamResult(new FileOutputStream(new File(System.getProperty("user.dir") + "/data/cursos.xml")));
+				
+				// Transforma el document XML especificat per source i escriu el document XML resultant a l'objecte especificat per result
+				
+				transformer.transform(source, result);
 			}
 			
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
-		}			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (TransformerException e) {
+			e.printStackTrace();
+		}
 	}
 }
